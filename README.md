@@ -15,29 +15,81 @@ The pipeline ingests raw loan data into a Bronze layer, performs cleansing and v
 ## 🏗️ Architecture
 
 <p align="center">
-  <img src="images/pipeline.png" width="900">
+  <img src="images/architecture.png" width="900">
 </p>
 
 ```
-Raw CSV Files
-        │
-        ▼
-Bronze Lakehouse
-(Raw Delta Tables)
-        │
-        ▼
-Silver Lakehouse
-(Data Cleansing & Validation)
-        │
-        ▼
-Gold Lakehouse
-(Fact & Dimension Tables)
-        │
-        ▼
-Microsoft Fabric Pipeline
-        │
-        ▼
-Power BI Dashboard
+                               Lending Club Dataset
+                            accepted_2007_to_2018Q4.csv
+                            rejected_2007_to_2018Q4.csv
+                                          │
+                                          ▼
+                           nb_load_bronze (PySpark)
+                                          │
+                                          ▼
+                          ┌─────────────────────────────────┐
+                          │        Bronze Lakehouse         │
+                          │─────────────────────────────────│
+                          │     bronze_accepted_loans       │
+                          │     bronze_rejected_loans       │
+                          └─────────────────────────────────┘
+                                          │
+                ┌─────────────────────────┼─────────────────────────┐
+                ▼                         ▼                         ▼
+      nb_data_dictionary         nb_data_profile         Schema Validation
+                │                         │
+                ▼                         ▼
+       Column Metadata          Null Analysis
+       Data Types               Duplicate Analysis
+       Nullable                 Data Quality Checks
+                └─────────────────────────┬─────────────────────────┘
+                                          │
+                                          ▼
+                        nb_transform_silver (PySpark ETL)
+                                          │
+                                          ▼
+                          ┌─────────────────────────────────┐
+                          │        Silver Lakehouse         │
+                          │─────────────────────────────────│
+                          │ silver_accepted_loans           │
+                          │ • Type Casting                  │
+                          │ • Date Parsing                  │
+                          │ • Duplicate Removal             │
+                          │ • Invalid Record Removal        │
+                          │ • Business Rule Validation      │
+                          │ • Column Rationalization        │
+                          └─────────────────────────────────┘
+                                          │
+                                          ▼
+                           nb_build_gold (Star Schema)
+                                          │
+              ┌───────────────┬───────────────┬───────────────┐
+              ▼               ▼               ▼               ▼
+     gold_dim_date    gold_dim_grade   gold_dim_purpose   gold_dim_state
+              │
+              ▼
+      gold_dim_status
+              │
+              ▼
+        gold_fact_loan
+              │
+              ▼
+      Surrogate Keys Generated
+      Referential Integrity Validated
+      (0 Orphan Records)
+              │
+              ▼
+ Microsoft Fabric Pipeline
+(End-to-End ETL Orchestration)
+              │
+              ▼
+ audit_log (Execution Monitoring)
+              │
+              ▼
+ Power BI Semantic Model
+              │
+              ▼
+ Executive Dashboard & Analytics
 ```
 
 ---
@@ -193,6 +245,11 @@ Validated all surrogate keys after Gold layer creation.
 ### Gold Fact Table
 
 ![](images/gold_fact.png)
+
+---
+## 📋 Audit Log
+
+![Audit Log](images/audit_log.png)
 
 ---
 
