@@ -29,7 +29,7 @@ The pipeline ingests raw loan data into a Bronze layer, performs cleansing and v
                                                                 │
                                        ┌────────────────────────┼────────────────────────┐
                                        ▼                        ▼                        ▼
-                               nb_data_dictionary      nb_data_profile          Schema Validation
+                              nb_data_dictionary      nb_data_profile          Schema Validation
                                        │                        │
                                        └───────────────┬────────┘
                                                        ▼
