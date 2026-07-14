@@ -18,78 +18,59 @@ The pipeline ingests raw loan data into a Bronze layer, performs cleansing and v
   <img src="images/architecture.png" width="900">
 </p>
 
-```
-                               Lending Club Dataset
-                            accepted_2007_to_2018Q4.csv
-                            rejected_2007_to_2018Q4.csv
-                                          │
-                                          ▼
-                           nb_load_bronze (PySpark)
-                                          │
-                                          ▼
-                          ┌─────────────────────────────────┐
-                          │        Bronze Lakehouse         │
-                          │─────────────────────────────────│
-                          │     bronze_accepted_loans       │
-                          │     bronze_rejected_loans       │
-                          └─────────────────────────────────┘
-                                          │
-                ┌─────────────────────────┼─────────────────────────┐
-                ▼                         ▼                         ▼
-      nb_data_dictionary         nb_data_profile         Schema Validation
-                │                         │
-                ▼                         ▼
-       Column Metadata          Null Analysis
-       Data Types               Duplicate Analysis
-       Nullable                 Data Quality Checks
-                └─────────────────────────┬─────────────────────────┘
-                                          │
-                                          ▼
-                        nb_transform_silver (PySpark ETL)
-                                          │
-                                          ▼
-                          ┌─────────────────────────────────┐
-                          │        Silver Lakehouse         │
-                          │─────────────────────────────────│
-                          │ silver_accepted_loans           │
-                          │ • Type Casting                  │
-                          │ • Date Parsing                  │
-                          │ • Duplicate Removal             │
-                          │ • Invalid Record Removal        │
-                          │ • Business Rule Validation      │
-                          │ • Column Rationalization        │
-                          └─────────────────────────────────┘
-                                          │
-                                          ▼
-                           nb_build_gold (Star Schema)
-                                          │
-              ┌───────────────┬───────────────┬───────────────┐
-              ▼               ▼               ▼               ▼
-     gold_dim_date    gold_dim_grade   gold_dim_purpose   gold_dim_state
-              │
-              ▼
-      gold_dim_status
-              │
-              ▼
-        gold_fact_loan
-              │
-              ▼
-      Surrogate Keys Generated
-      Referential Integrity Validated
-      (0 Orphan Records)
-              │
-              ▼
- Microsoft Fabric Pipeline
-(End-to-End ETL Orchestration)
-              │
-              ▼
- audit_log (Execution Monitoring)
-              │
-              ▼
- Power BI Semantic Model
-              │
-              ▼
- Executive Dashboard & Analytics
+
+```text
+                                                     Lending Club Loan Dataset
+                                    accepted_2007_to_2018Q4.csv | rejected_2007_to_2018Q4.csv
+                                                                │
+                                                                ▼
+                                                     🥉 Bronze Lakehouse
+                                                  nb_load_bronze (PySpark)
+                                                                │
+                                       ┌────────────────────────┼────────────────────────┐
+                                       ▼                        ▼                        ▼
+                               nb_data_dictionary      nb_data_profile          Schema Validation
+                                       │                        │
+                                       └───────────────┬────────┘
+                                                       ▼
+                                            🥈 Silver Lakehouse
+                                           nb_transform_silver
+                                                       │
+                                    ┌──────────────────┼──────────────────┐
+                                    │                  │                  │
+                                    ▼                  ▼                  ▼
+                            Data Cleansing     Data Validation   Column Rationalization
+                            • Type Casting     • Duplicate IDs   • 151 → 104 Columns
+                            • Date Parsing     • Duplicate Rows
+                            • Null Handling    • Domain Checks
+                                                       │
+                                                       ▼
+                                              🥇 Gold Lakehouse
+                                               nb_build_gold
+                                                       │
+                                ┌──────────────┬──────────────┬──────────────┐
+                                ▼              ▼              ▼              ▼
+                          gold_dim_date  gold_dim_grade  gold_dim_state  gold_dim_purpose
+                                                       │
+                                                       ▼
+                                                gold_dim_status
+                                                       │
+                                                       ▼
+                                                gold_fact_loan
+                                                       │
+                                ┌──────────────────────┼──────────────────────┐
+                                ▼                      ▼                      ▼
+                           Surrogate Keys      Star Schema Model     Referential Integrity
+                                                                    (0 Orphan Records)
+                                                       │
+                                                       ▼
+                                          Microsoft Fabric Pipeline
+                                                       │
+                                                       ▼
+                                              audit_log Monitoring
+                                                       │
+                                                       ▼
+                                           📊 Power BI Dashboard
 ```
 
 ---
