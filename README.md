@@ -312,6 +312,7 @@ Loan-Portfolio-Analytics-Fabric/
 
 │── images/
 │── notebooks/
+│── pipeline/
 │── powerbi/
 │── README.md
 ```
@@ -324,7 +325,6 @@ Loan-Portfolio-Analytics-Fabric/
 - Slowly Changing Dimensions (SCD Type 2)
 - Metadata-driven Framework
 - Approval Funnel Analytics
-- Power BI Executive Dashboard
 
 ---
 
