@@ -135,6 +135,7 @@ Build Gold
 
 | Metric | Value |
 |--------|------:|
+| Columns | **151** |
 | Accepted Loan Records | **2,260,701** |
 
 ---
@@ -164,25 +165,18 @@ Implemented:
 
 ## 🥇 Gold Layer
 
-Designed a Star Schema consisting of:
+Designed a dimensional Star Schema optimized for analytical workloads.
 
-### Fact Table
+### Statistics
 
-- gold_fact_loan
-
-### Dimension Tables
-
-- gold_dim_date
-- gold_dim_grade
-- gold_dim_purpose
-- gold_dim_state
-- gold_dim_status
-
-Features:
-
-- Surrogate Keys
-- Referential Integrity Validation
-- Analytics-ready dimensional model
+| Metric | Value |
+|---------|-------|
+| Columns Reduced | **104 → 26** |
+| Fact Tables | 1 |
+| Dimension Tables | 5 |
+| Total Records | 2,260,413 |
+| Surrogate Keys | 5 |
+| Referential Integrity | ✅ Passed |
 
 ---
 
@@ -215,6 +209,60 @@ Validated all surrogate keys after Gold layer creation.
 
 ---
 
+# 📊 Power BI Dashboard
+
+An interactive three-page Power BI dashboard was built on top of the Gold layer star schema to provide executive, risk, and regional portfolio insights.
+
+### Executive Summary
+
+- Portfolio KPIs
+- Loan Funding Trend
+- Loan Status Distribution
+- Interactive Year & Grade filters
+
+<p align="center">
+  <img src="powerbi/executive_summary.png" width="900">
+</p>
+
+---
+
+### Risk & Grade Analysis
+
+- Loan Count by Grade
+- Risk-Based Pricing by Grade
+- Loan Performance Matrix
+- Interactive Grade Analysis
+
+<p align="center">
+  <img src="powerbi/risk_grade_analysis.png" width="900">
+</p>
+
+---
+
+### Regional & Portfolio Insights
+
+- Top Funding States
+- Loan Purpose Distribution
+- Regional Loan Analytics
+- Interactive Geographic Filters
+
+<p align="center">
+  <img src="powerbi/regional_portfolio_analysis.png" width="900">
+</p>
+
+---
+
+# 📈 Key Business Insights
+
+- Processed over **2.26 million** accepted loan records.
+- Total funded loan amount exceeds **$170 Billion**.
+- Grades **B** and **C** represent the highest loan volume.
+- Interest rates increase consistently across lower credit grades.
+- **California** contributes the highest funded loan amount.
+- **Debt Consolidation** is the most common loan purpose.
+
+---
+
 ## 📷 Project Screenshots
 
 ### Lakehouse
@@ -237,6 +285,23 @@ Validated all surrogate keys after Gold layer creation.
 ### Referential Integrity Validation
 
 ![](images/referential_integrity.png)
+
+---
+
+## ⭐ Star Schema
+
+The Gold layer follows a dimensional modeling approach consisting of:
+
+- 1 Fact Table
+- 5 Dimension Tables
+- Surrogate Keys
+- One-to-Many Relationships
+- Analytics-optimized design
+
+<p align="center">
+<img src="images/star_schema.png" width="700">
+</p>
+
 
 ---
 
