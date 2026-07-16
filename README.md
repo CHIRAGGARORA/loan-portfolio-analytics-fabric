@@ -102,9 +102,9 @@ Dataset contains
 
 ---
 
-## ⚙️ ETL Pipeline
+## ⚙️ ELT Pipeline
 
-The complete ETL process is orchestrated using a Microsoft Fabric Data Pipeline.
+The complete ELT process is orchestrated using a Microsoft Fabric Data Pipeline.
 
 <p align="center">
   <img src="images/pipeline.png" width="900">
